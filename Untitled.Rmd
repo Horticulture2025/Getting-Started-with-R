@@ -1,0 +1,244 @@
+---
+title: "Getting Started with R: A Beginner's Guide"
+author: "Rahmatullah khan"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Introduction
+
+This tutorial will help you get started with R programming. We'll cover setting directories, creating simple plots, and basic data manipulation - perfect for your first steps in R!
+
+# Setting Up Your Working Directory
+
+## Understanding Working Directories
+
+The working directory is the folder where R looks for files and saves outputs by default.
+
+```{r check-directory}
+# Check current working directory
+getwd()
+
+# List files in current directory
+list.files()
+```
+
+## Setting Your Working Directory
+
+```{r set-directory, eval=FALSE}
+# Method 1: Using setwd() - adjust path to your folder
+setwd("~/Documents/R_Tutorial/Getting_Started")  # Mac/Linux
+# setwd("C:/Users/YourName/Documents/R_Tutorial")  # Windows
+```
+
+# Creating and Setting Output Directory
+
+Let's create a folder for our outputs and set it as our working directory:
+
+```{r create-output-dir}
+# Create output directory if it doesn't exist
+output_dir <- "outputs"
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+
+# Check the directory was created
+list.files()
+
+# Set output directory (optional - you can save directly to it)
+# setwd(output_dir)
+```
+
+# Simple Data Creation
+
+Let's create some sample data to work with:
+
+```{r create-data}
+# Create simple data frame
+student_data <- data.frame(
+  student_id = 1:20,
+  name = paste("Student", 1:20),
+  math_score = c(85, 92, 78, 88, 95, 76, 82, 90, 87, 79,
+                 93, 81, 89, 77, 94, 86, 83, 91, 75, 84),
+  science_score = c(88, 85, 82, 90, 92, 79, 85, 88, 91, 83,
+                    89, 80, 87, 78, 93, 84, 86, 89, 77, 85),
+  grade = sample(c("A", "B", "C"), 20, replace = TRUE)
+)
+
+# View the data
+head(student_data)
+```
+
+# Creating Simple Plots
+
+## Basic Scatter Plot
+
+```{r scatter-plot}
+# Simple scatter plot
+plot(student_data$math_score, student_data$science_score,
+     main = "Math vs Science Scores",
+     xlab = "Math Score",
+     ylab = "Science Score",
+     pch = 16,
+     col = "blue")
+
+# Add a trend line
+abline(lm(science_score ~ math_score, data = student_data), 
+       col = "red", lwd = 2)
+```
+
+## Bar Plot
+
+```{r bar-plot}
+# Count of students by grade
+grade_counts <- table(student_data$grade)
+
+# Create bar plot
+barplot(grade_counts,
+        main = "Student Distribution by Grade",
+        xlab = "Grade",
+        ylab = "Number of Students",
+        col = c("lightblue", "lightgreen", "lightcoral"))
+```
+
+## Histogram
+
+```{r histogram}
+# Histogram of math scores
+hist(student_data$math_score,
+     main = "Distribution of Math Scores",
+     xlab = "Math Score",
+     ylab = "Frequency",
+     col = "lightblue",
+     border = "black",
+     breaks = 8)
+```
+
+## Box Plot
+
+```{r box-plot}
+# Box plot comparing scores by grade
+boxplot(math_score ~ grade, data = student_data,
+        main = "Math Scores by Grade",
+        xlab = "Grade",
+        ylab = "Math Score",
+        col = c("lightblue", "lightgreen", "lightcoral"))
+```
+
+# Saving Plots to Output Directory
+
+```{r save-plots}
+# Set up output directory for saving
+output_path <- "outputs"
+
+# Save scatter plot
+png(file.path(output_path, "scatter_plot.png"), width = 600, height = 400)
+plot(student_data$math_score, student_data$science_score,
+     main = "Math vs Science Scores",
+     xlab = "Math Score",
+     ylab = "Science Score",
+     pch = 16,
+     col = "blue")
+abline(lm(science_score ~ math_score, data = student_data), 
+       col = "red", lwd = 2)
+dev.off()
+
+# Save bar plot
+png(file.path(output_path, "grade_distribution.png"), width = 600, height = 400)
+grade_counts <- table(student_data$grade)
+barplot(grade_counts,
+        main = "Student Distribution by Grade",
+        xlab = "Grade",
+        ylab = "Number of Students",
+        col = c("lightblue", "lightgreen", "lightcoral"))
+dev.off()
+
+# Check what was saved
+list.files(output_path)
+```
+
+# Basic Data Analysis
+
+```{r basic-analysis}
+# Summary statistics
+summary(student_data[, c("math_score", "science_score")])
+
+# Calculate correlations
+cor(student_data$math_score, student_data$science_score)
+
+# Average scores by grade
+aggregate(cbind(math_score, science_score) ~ grade, 
+          data = student_data, mean)
+```
+
+# Tips for First-Time R Users
+
+## Essential R Commands
+
+```{r essential-commands}
+# View data
+head(student_data)      # First 6 rows
+tail(student_data)      # Last 6 rows
+str(student_data)       # Structure of data
+names(student_data)     # Column names
+
+# Install and load packages
+# install.packages("ggplot2")  # Install package
+# library(ggplot2)             # Load package
+```
+
+## File Operations
+
+```{r file-operations}
+# Save data
+write.csv(student_data, file.path(output_path, "student_data.csv"), row.names = FALSE)
+
+# Read data (example)
+# my_data <- read.csv("data/my_file.csv")
+
+# List files
+list.files()
+list.files(output_path)
+```
+
+# Conclusion
+
+Congratulations! You've learned the basics of:
+
+- Setting and managing working directories
+- Creating and manipulating simple data
+- Making various types of plots
+- Saving outputs to specific directories
+- Basic data analysis
+
+## Next Steps
+
+1. Try modifying the plots with different colors and labels
+2. Create your own data sets
+3. Explore more plot types with `ggplot2`
+4. Learn about data manipulation with `dplyr`
+
+## Directory Structure After Running This Tutorial
+
+After running this code, your project folder should look like this:
+
+```
+your_project/
+├── your_r_markdown_file.Rmd
+├── outputs/
+│   ├── scatter_plot.png
+│   ├── grade_distribution.png
+│   └── student_data.csv
+└── README.md (if you have one)
+```
+
+Happy coding with R! 🚀
